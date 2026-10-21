@@ -237,6 +237,8 @@ Full build and run procedure is in section 11.1 to 11.3. The scripts are given i
   when asked, not summarised.
 - **Notes are never submitted to anyone.** Not attached, not pasted, not bundled. They are private
   working out. See section 3.2. This does not bend for a deadline.
+- **Read every generated document back before it is uploaded.** Word count is not enough - check the
+  paragraph styles too, because a wrong-looking page passes a word count. See section 11.6.
 - "Activity:" units have no text box on QA. It just says record your answers in a format of your choice.
   The deliverable is the notes file and the answers in it are the learner's.
 - **Labs are interactive sessions led by the learner.** They drive and decide. Only do the parts they
@@ -1110,18 +1112,34 @@ def render_markdown(md_text):
 
         mb = re.match(r"^([-*+])\s+(.*)$", s)
         if mb:
-            p = doc.add_paragraph(style="List Bullet")
-            add_runs(p, mb.group(2))
-            p.paragraph_format.space_after = Pt(4)
+            buf = [mb.group(2)]
             i += 1
+            while i < len(lines):
+                nxt = lines[i].strip()
+                if (not nxt or nxt.startswith("#") or nxt.startswith("|") or nxt.startswith("```")
+                        or re.match(r"^([-*+]|\d+\.)\s+", nxt) or nxt.startswith(">")):
+                    break
+                buf.append(nxt)
+                i += 1
+            p = doc.add_paragraph(style="List Bullet")
+            add_runs(p, " ".join(buf))
+            p.paragraph_format.space_after = Pt(4)
             continue
 
         mn = re.match(r"^(\d+)\.\s+(.*)$", s)
         if mn:
-            p = doc.add_paragraph(style="List Number")
-            add_runs(p, mn.group(2))
-            p.paragraph_format.space_after = Pt(4)
+            buf = [mn.group(2)]
             i += 1
+            while i < len(lines):
+                nxt = lines[i].strip()
+                if (not nxt or nxt.startswith("#") or nxt.startswith("|") or nxt.startswith("```")
+                        or re.match(r"^([-*+]|\d+\.)\s+", nxt) or nxt.startswith(">")):
+                    break
+                buf.append(nxt)
+                i += 1
+            p = doc.add_paragraph(style="List Number")
+            add_runs(p, " ".join(buf))
+            p.paragraph_format.space_after = Pt(4)
             continue
 
         if s.startswith(">"):
@@ -1171,6 +1189,31 @@ for l in lines:
 
 A stage reflection should come out around 60-120 words. If it is running to hundreds, it is too long -
 see section 3.1.
+
+**Read the paragraph styles back, not just the words.** Word count alone will not catch a broken
+layout. Print the style of every paragraph and look at the shape:
+
+```python
+for p in re.findall(r"<w:p[ >].*?</w:p>", xml, re.S):
+    txt = "".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", p, re.S))
+    st = re.search(r'w:pStyle w:val="([^"]+)"', p)
+    print(f"[{(st.group(1) if st else '-'):11}] {txt}")
+```
+
+**The trap: hard-wrapped bullets.** Markdown written at a sensible line width puts a bullet across two
+source lines. If the list branch consumes only the first line and advances one line, the wrap becomes a
+separate unbulleted paragraph underneath. The text is all there and the word count is right, so it
+passes a word-count check - but the page looks wrong, and it looks wrong in exactly the way that makes
+a reader suspect the document was generated rather than written.
+
+Every branch that starts a paragraph must absorb its own continuation lines: bullets, numbered items,
+and plain paragraphs alike. The stop condition is the same for all of them - blank line, heading,
+table, fence, another list marker, or blockquote.
+
+Caught on a real submission. The reflection had been uploaded with each bullet split across two
+paragraphs. The learner's verdict was to leave the submitted copy and get it right next time, which is
+the right call once a document is in: a tidy-up resubmission draws more attention than the fault does.
+Fix the builder, verify the read-back, and carry the lesson into the next one.
 
 ---
 
@@ -1253,6 +1296,11 @@ Newest at the top. One line per thing learned. This is how the file stays worth 
 
 **Seed entries - carried over from the run that produced this template.**
 
+- **Verify layout, not just word count.** A docx read-back that only counts words will pass a broken
+  page. Hard-wrapped markdown bullets were being split into a bullet plus a plain paragraph, because
+  the list branch consumed one line and advanced one line. Print each paragraph's style and look at the
+  shape. Caught on a real submission that had already gone in - the learner's call was to leave it and
+  fix it for next time, which is right: a tidy-up resubmission draws more attention than the fault.
 - **Notes are private.** They are the learner's working out and never go to a third party, ever, in any
   form. A docx was once built bundling five notes files behind a 72 word reflection - 11,067 words of
   private material about to be uploaded. Caught before it went. The builder now excludes notes and says
@@ -1281,8 +1329,8 @@ Newest at the top. One line per thing learned. This is how the file stays worth 
   rule applies as to written work. Hold the submit and report the results.
 - `/api/contents/<name>.ipynb` on a lab Jupyter works from inside the page because it uses the session
   cookie, while the QA API returns 401. That is the way to prove a notebook actually saved.
-- The mark control is an `<a role="button">`, and it is two steps. Counting `<button>` returns 0 either
-  way and proves nothing.
+- The mark control is an `<a role="button">`. Counting `<button>` returns 0 either way and proves
+  nothing. It is **not** reliably two steps - see the absent-modal entry above.
 - The progress API only returns **course level** completeness. There is no per lesson number, so per unit
   "Completed" state is the check that matters.
 - Notes must be written **before** the tick. Marking first loses the explanation and the notes become a
