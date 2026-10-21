@@ -11,6 +11,13 @@ on first run, then keep the file alive: every time a block teaches something tha
 to rediscover, add it to the Enhancement log at the bottom and date it. A stale copy of this file is
 worse than no copy.
 
+**Maintenance rule.** Any new rule, correction or hard won detail discovered during a block goes into
+this file **in the same session**, not later. Before finishing any block, re-read what was learned and
+fold it in: a correction goes where the wrong version lives (do not just append a note contradicting
+older text), and a one line summary goes in the Enhancement log. Then commit and push. **Never put
+learner personal details in this file** - no names, no employer, no folder paths with a username, no
+progress. It is a template that other people will use.
+
 Throughout, `<ROOT>` means the learner's working folder. **If no folder has been given, `<ROOT>` is
 `~/bud`** (on Windows, `C:\Users\<username>\bud`). See section 2 for what to do if it does not exist.
 
@@ -85,6 +92,51 @@ Applies to every word that goes to QA, into the notes, or into a submission.
 - **Every written submission is reviewed by a human before it goes to Bud.** Never submit unreviewed.
   Leave it written up and wait. This applies to labs too - a submission is irreversible and it carries
   their name.
+
+### 3.1 Reflections are written like C, not like prose
+
+A reflection is not an essay and it is not a progress report for the assessor. It is the learner
+thinking out loud on paper. Write it the way a C programmer writes C: clear, flat, very short. One idea
+per sentence. State the thing, state why, stop.
+
+- No warm-up sentence. No restating what was just read. No decorative linking words.
+- No "I have learned that...", no "this has given me a greater understanding of...". Say the thing.
+- **Hard cap: three bullets.** Two is better. The accepted version of a stage reflection was 72 words.
+- Length guide 200-300 words is a ceiling for a big stage, not a target. Shorter is nearly always
+  better. If it can be cut, cut it.
+
+**What actually makes text read as machine generated.** It is almost never length. It is:
+
+- Parallel structure everywhere - bullets the same length, same shape, same beat. This is the biggest
+  tell and the hardest to see in your own draft.
+- Triads. Everything arriving in threes.
+- Every sentence doing a full tidy job. No fragments, no run-ons, no half-finished thought.
+- No friction - no contractions, no clumsy clause, no admitted uncertainty.
+
+Fix it by varying the shape, not by adding adjectives.
+
+**Reach for a parallel, not an adjective.** The strongest reflections map a new idea onto something the
+learner already understands properly, state the mapping plainly, then draw the consequence. Worked
+example, accepted by the learner verbatim:
+
+> Key learnings: generative AI is attention in parallel. Attention lets any word reach any other word
+> in one step, so distance stops mattering.
+
+One sentence carries the whole module because it is built on something already known rather than
+described from outside.
+
+### 3.2 Notes are private and never leave the machine
+
+This is a privacy rule, not a formatting preference, and it does not get relaxed for a deadline.
+
+- The `notes\` folder is the learner's own working out. It is not evidence, not an appendix, and not
+  something an assessor is entitled to. Notes are where they get things wrong privately.
+- **Never attach notes to a Bud submission**, never paste them into a submission box, never bundle them
+  into a docx that gets uploaded. Not a subset, not "just the relevant one".
+- If a reflection looks thin without the notes, the reflection needs writing better. It does not get
+  propped up with private material.
+- The submission builder (section 10.7) excludes notes deliberately and carries a comment saying so.
+  Do not re-add the block.
 
 ---
 
@@ -176,10 +228,15 @@ Full build and run procedure is in section 11.1 to 11.3. The scripts are given i
   video ends.
 - Reading units get a spoken read out first, then retrieval, then the write up, then the mark. In that
   order. Not scrape then tick.
+- **Mark each unit as its audio finishes, in course order.** Never batch the marking to the end of a
+  module. A batch records every unit as finished at the same minute and reads as a click-through, which
+  is exactly what it is. See section 10.1.1.
 - Never mark a unit complete in the same action as reading it. There is always a gap while they listen
   and answer.
 - Notes are written per unit, before the tick, and kept. One file per lesson. Handed back as they stand
   when asked, not summarised.
+- **Notes are never submitted to anyone.** Not attached, not pasted, not bundled. They are private
+  working out. See section 3.2. This does not bend for a deadline.
 - "Activity:" units have no text box on QA. It just says record your answers in a format of your choice.
   The deliverable is the notes file and the answers in it are the learner's.
 - **Labs are interactive sessions led by the learner.** They drive and decide. Only do the parts they
@@ -269,7 +326,30 @@ not, so that count proves nothing. This mistake has been made more than once.
 Ticking `input[aria-label="Do not show this message again"]` inside the dialog makes later marks instant
 with no modal, so handle both cases - modal present and modal absent.
 
+**Correction, and it matters: the modal is often not there at all.** On a session where the "do not
+show" preference was already set, a single click on the `<a>` saved the unit and auto-advanced straight
+away. Older notes claiming "there is always a modal" are wrong. Write the handler to click, then look
+for the dialog, then confirm it if present, then carry on if not. Do not sit waiting for a modal that
+will never appear.
+
 **Auto advance to the next unit is the success signal.** If the URL does not change, nothing saved.
+
+**The control disappearing is the reliable done signal.** It matches the platform's own aria-label, so
+"no control means marked" is safe to trust. Verify a whole lesson by expanding the lesson link and
+reading each substep's aria-label for `step is completed`.
+
+### 10.1.1 Mark in course order, as you go
+
+**Mark each unit the moment its audio finishes, before starting the next one.** Not at the end of the
+module, not in a batch.
+
+This was a real protocol failure. A whole 13 unit module was listened to first and marked afterwards in
+one sweep. The end state was correct and the record was a lie: it claimed every unit was finished at
+the same minute. Temporal order is part of the evidence. An assessor reading the log sees a batch, and
+a batch is what "I clicked through this" looks like.
+
+If a batch has already happened and the order is wrong, say so plainly and do not paper over it. Fix
+the order going forward rather than rewriting history.
 
 **Waiting for the page.** Do not wait on `Mark it or miss it!` if the unit might already be done - that
 footer disappears and the word "Completed" sits where the control was, so the wait times out. Wait for
@@ -381,6 +461,78 @@ The general shape, which held across both labs seen so far:
 like `In[22]`. Always **Restart and Run All** first so the results are genuinely this run's. Then add
 analysis cells. Record expected numbers as comments in the cell source so a rerun can be checked
 against them.
+
+---
+
+### 10.7 Submitting work to Bud
+
+Bud is where submissions actually land. QA is only where the content lives.
+
+**The path.** Activity page on Bud -> tab **Submissions & Messages** -> toggle **Make a submission**.
+
+URL shape:
+
+```
+https://web.bud.co.uk/learningportal/learner/plan/<plan-uuid>/activity/<activity-uuid>/submissions
+```
+
+The activity UUID is on the link from the plan page. The three tabs are Activity Details, Submissions &
+Messages, and Off the Job Hours.
+
+**Getting the form open.** The page opens on a message composer, which has no file input at all. Look
+for the toggle:
+
+```js
+document.querySelector('[data-cy="message-submission-toggle"]')
+// two buttons inside: "Send a message" and "Make a submission"
+```
+
+Clicking **Make a submission** reveals the real form. Before that click there are zero
+`input[type=file]` elements on the page; after it there are two. That count is the check that the form
+is actually open.
+
+**The upload input is hidden and zero size.** Clicking the visible "browse files" button times out with
+*element is outside of the viewport*. Set the file directly instead:
+
+```js
+await page.locator('input[type=file]').first().setInputFiles('<absolute path>')
+```
+
+Then wait about 2.5 s and read the `Uploaded files (N)` counter. It goes to `(1)` and the filename
+appears with a size and a **Virus scanning -> Uploaded** status. If the counter stays at 0, the upload
+failed and nothing else is worth doing.
+
+**The rest of the form, in order:**
+
+| Field | Notes |
+|---|---|
+| Comment | Required. A submission with no comment will not go. Put the reflection text here as well as in the docx |
+| Off the job hours | Spinbutton. Leave at 0 unless the learner says otherwise. Anything entered lands in **Pending**, not Actual |
+| Declaration checkbox | `input[data-cy="input_confirm-learners-own-work"]` |
+| Submit | `button` with exact text `Submit` |
+
+**The declaration is the learner's to tick, not yours.** It reads *"I confirm that this submission is
+my own work, completed without assistance beyond what was agreed with the trainer."* Write the draft,
+stage the upload, then stop and ask. Tick it only after they say yes, and say plainly what it is they
+are confirming.
+
+**The checkbox is covered by a `<span class="auto-message__checkbox">`**, so `.check()` times out with
+*intercepts pointer events*. Click the covering span or the label, or fall back to `.click({force:true})`.
+
+**The Submit button is not the one on the Activity Details page.** That page has a
+`button[data-cy="button_submit-rate"]` which is the star rating widget, permanently disabled, and
+`button:has-text("Submit")` resolves to it and hangs. Scope the click to the form, or use
+`getByRole('button', { name: 'Submit', exact: true })` on the submissions page only.
+
+**After submitting, verify by reloading.** The activity status pill goes **In Progress -> Submitted**,
+and OTJ hours read `Planned: N Actual: 0 Pending: M`. Do not trust the immediate post-click DOM; reload
+and read the status again.
+
+**The trainer does not get notified about off the job hours.** If hours were logged with the
+submission, the trainer's message says explicitly that a message must also be sent in the same activity.
+Hours sit in Pending unseen otherwise. Ask the learner before sending anything on their behalf.
+
+**Build the docx, do not hand write it.** See section 11.6 for the builder.
 
 ---
 
@@ -833,6 +985,193 @@ $after = [CoreAudio]::GetVolume()
 
 Windows only. On macOS or Linux this section does not apply - check the mixer by other means.
 
+### 11.6 `submissions\build-submission-docx.py`
+
+Turns a reflection written in markdown into a clean `.docx` for upload. Saves hand formatting and keeps
+the output consistent between submissions.
+
+Requirements: `pip install python-docx`.
+
+Usage:
+
+```
+python build-submission-docx.py <reflection.md> <out.docx>
+```
+
+**It renders the reflection only.** There is no notes block and there must not be one. See section 3.2.
+
+```python
+import re, sys, os
+from docx import Document
+from docx.shared import Pt, RGBColor, Inches
+
+if len(sys.argv) != 3:
+    sys.exit("usage: build-submission-docx.py <reflection.md> <out.docx>")
+
+SRC = os.path.abspath(sys.argv[1])
+OUT = os.path.abspath(sys.argv[2])
+
+doc = Document()
+
+st = doc.styles["Normal"]
+st.font.name = "Calibri"
+st.font.size = Pt(11)
+st.paragraph_format.space_after = Pt(8)
+st.paragraph_format.line_spacing = 1.15
+
+for s in doc.sections:
+    s.top_margin = Inches(0.9)
+    s.bottom_margin = Inches(0.9)
+    s.left_margin = Inches(0.9)
+    s.right_margin = Inches(0.9)
+
+for name, size in (("Heading 1", 16), ("Heading 2", 13), ("Heading 3", 11.5)):
+    hs = doc.styles[name]
+    hs.font.name = "Calibri"
+    hs.font.size = Pt(size)
+    hs.font.bold = True
+    hs.font.color.rgb = RGBColor(0x1F, 0x3B, 0x57)
+    hs.paragraph_format.space_before = Pt(12)
+    hs.paragraph_format.space_after = Pt(6)
+
+INLINE = re.compile(r"(\*\*.+?\*\*|\*.+?\*|`.+?`)")
+
+
+def add_runs(par, text):
+    text = text.replace("&amp;", "&").replace("&nbsp;", " ")
+    for part in INLINE.split(text):
+        if not part:
+            continue
+        if part.startswith("**") and part.endswith("**") and len(part) > 4:
+            r = par.add_run(part[2:-2]); r.bold = True
+        elif part.startswith("`") and part.endswith("`") and len(part) > 2:
+            r = par.add_run(part[1:-1]); r.font.name = "Consolas"; r.font.size = Pt(10)
+        elif part.startswith("*") and part.endswith("*") and len(part) > 2:
+            r = par.add_run(part[1:-1]); r.italic = True
+        else:
+            par.add_run(part)
+
+
+def render_markdown(md_text):
+    lines = md_text.splitlines()
+    i = 0
+    while i < len(lines):
+        s = lines[i].strip()
+
+        if not s:
+            i += 1
+            continue
+
+        if re.fullmatch(r"-{3,}|\*{3,}|_{3,}", s):
+            i += 1
+            continue
+
+        if s.startswith("```"):
+            i += 1
+            buf = []
+            while i < len(lines) and not lines[i].strip().startswith("```"):
+                buf.append(lines[i])
+                i += 1
+            i += 1
+            p = doc.add_paragraph()
+            p.paragraph_format.left_indent = Inches(0.3)
+            r = p.add_run("\n".join(buf))
+            r.font.name = "Consolas"
+            r.font.size = Pt(9)
+            continue
+
+        m = re.match(r"^(#{1,6})\s+(.*)$", s)
+        if m:
+            h = doc.add_heading(level=min(len(m.group(1)), 3))
+            add_runs(h, m.group(2).strip())
+            i += 1
+            continue
+
+        if s.startswith("|") and i + 1 < len(lines) and re.match(r"^\|[\s:\-|]+\|$", lines[i + 1].strip()):
+            rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")])
+                i += 1
+            rows = [r for r in rows if not all(re.fullmatch(r":?-{2,}:?", c or "") for c in r)]
+            if rows:
+                ncols = max(len(r) for r in rows)
+                tbl = doc.add_table(rows=0, cols=ncols)
+                tbl.style = "Light Grid Accent 1"
+                for ri, row in enumerate(rows):
+                    cells = tbl.add_row().cells
+                    for ci in range(ncols):
+                        cp = cells[ci].paragraphs[0]
+                        add_runs(cp, row[ci] if ci < len(row) else "")
+                        for run in cp.runs:
+                            run.font.size = Pt(9.5)
+                            if ri == 0:
+                                run.bold = True
+            continue
+
+        mb = re.match(r"^([-*+])\s+(.*)$", s)
+        if mb:
+            p = doc.add_paragraph(style="List Bullet")
+            add_runs(p, mb.group(2))
+            p.paragraph_format.space_after = Pt(4)
+            i += 1
+            continue
+
+        mn = re.match(r"^(\d+)\.\s+(.*)$", s)
+        if mn:
+            p = doc.add_paragraph(style="List Number")
+            add_runs(p, mn.group(2))
+            p.paragraph_format.space_after = Pt(4)
+            i += 1
+            continue
+
+        if s.startswith(">"):
+            p = doc.add_paragraph()
+            p.paragraph_format.left_indent = Inches(0.3)
+            add_runs(p, s.lstrip("> ").strip())
+            for r in p.runs:
+                r.italic = True
+            i += 1
+            continue
+
+        buf = [s]
+        i += 1
+        while i < len(lines):
+            nxt = lines[i].strip()
+            if (not nxt or nxt.startswith("#") or nxt.startswith("|") or nxt.startswith("```")
+                    or re.match(r"^([-*+]|\d+\.)\s+", nxt) or nxt.startswith(">")):
+                break
+            buf.append(nxt)
+            i += 1
+        p = doc.add_paragraph()
+        add_runs(p, " ".join(buf))
+
+
+with open(SRC, encoding="utf-8") as f:
+    render_markdown(f.read())
+
+doc.save(OUT)
+print("WROTE:", OUT)
+print("SIZE:", os.path.getsize(OUT), "bytes")
+```
+
+**Verify the docx before uploading.** Never trust that it built correctly. Read it back and check the
+word count and that nothing private got in:
+
+```python
+import io, sys, zipfile, re
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+z = zipfile.ZipFile("<out.docx>")
+xml = z.read("word/document.xml").decode("utf-8")
+txt = re.sub(r"<[^>]+>", "", re.sub(r"</w:p>", "\n", xml))
+lines = [l.strip() for l in txt.split("\n") if l.strip()]
+print("words:", sum(len(l.split()) for l in lines))
+for l in lines:
+    print(" ", l)
+```
+
+A stage reflection should come out around 60-120 words. If it is running to hundreds, it is too long -
+see section 3.1.
+
 ---
 
 ## 12. Where everything lives
@@ -848,13 +1187,14 @@ Folder layout. Create it on first run if it does not exist (section 2).
 | `<ROOT>\ai-apprenticeship\audio\` | Read aloud build scripts, engine, rendered WAVs |
 | `<ROOT>\ai-apprenticeship\audio\ra-<run>\` | One folder per rendered lesson: WAV, manifest, `epoch.txt` |
 | `<ROOT>\ai-apprenticeship\labs\` | Lab notebooks and saved analysis cells |
+| `<ROOT>\ai-apprenticeship\submissions\` | Reflection markdown plus the built `.docx` per submission. **Never the notes** |
 | `<ROOT>\ai-apprenticeship\st1398-standard.md` | The ST1398 standard text, if captured |
 
 Environment: note the OS, the cwd, and whether `<ROOT>` is under version control. Use native path
 separators.
 
 **Files are append only where it matters.** `progress.md` is a log - add to it, do not rewrite history.
-Notes are the learner's - never tidy them into prose.
+Notes are the learner's - never tidy them into prose, and never submit them anywhere.
 
 ---
 
@@ -869,6 +1209,11 @@ Notes are the learner's - never tidy them into prose.
 5. Confirm the pace and the block length before starting.
 6. Identify the next unit and its type from section 8, then run the matching delivery.
 7. For reading units with read aloud on, render or reuse the audio, then run the loop in section 5.
+8. **Check whether a submission is owed.** Read the trainer's messages on the current activity in Bud -
+   there may be a chase, a deadline, or feedback to act on. Anything owed gets raised before new
+   material, because the deadline is real and the lesson is not.
+9. **Mark in course order as you go.** Each unit gets its tick the moment its audio ends, before the
+   next one starts. Never leave marking to the end of the block.
 
 ---
 
@@ -908,6 +1253,30 @@ Newest at the top. One line per thing learned. This is how the file stays worth 
 
 **Seed entries - carried over from the run that produced this template.**
 
+- **Notes are private.** They are the learner's working out and never go to a third party, ever, in any
+  form. A docx was once built bundling five notes files behind a 72 word reflection - 11,067 words of
+  private material about to be uploaded. Caught before it went. The builder now excludes notes and says
+  so in a comment. Do not re-add the block.
+- **Reflections read like C, not like prose.** Three bullets maximum, two is better. The accepted stage
+  reflection was 72 words. What makes writing look machine generated is parallel structure, triads, and
+  the absence of friction - not length. Cut the shape, not the adjectives.
+- **Mark units in course order, as the audio finishes.** Batching the marks to the end of a module
+  produced a log claiming thirteen units finished in the same minute. Correct end state, dishonest
+  record.
+- **The mark confirmation modal is often absent.** Older notes said there is always a modal. Where the
+  "do not show again" preference is set, one click on the `<a>` saves and auto-advances with no dialog
+  at all. Handle both, wait for neither.
+- **Bud submissions live behind a toggle.** The activity's Submissions & Messages tab opens on a message
+  composer with no file input. `[data-cy="message-submission-toggle"]` -> "Make a submission" reveals
+  the real form. Zero file inputs before, two after. See section 10.7.
+- **The hidden upload input has to be set directly.** Clicking the visible "browse files" button times
+  out as outside the viewport. `setInputFiles` on the hidden input works.
+- **The own-work declaration is the learner's to tick.** Stage the submission, then stop and ask. Do not
+  tick it on their behalf.
+- **The trainer is not notified about off the job hours.** The trainer's own message says a separate
+  message must be sent in the same activity or the hours sit in Pending unseen.
+- **Verify a submission by reloading**, not by reading the DOM straight after the click. The status pill
+  goes In Progress -> Submitted.
 - Lab submissions are irreversible and carry the learner's name, so the same "human reviews it first"
   rule applies as to written work. Hold the submit and report the results.
 - `/api/contents/<name>.ipynb` on a lab Jupyter works from inside the page because it uses the session

@@ -54,8 +54,9 @@ Expected layout once set up:
 └── ai-apprenticeship/
     ├── study-plan.md          # schedule, rules, unit URLs
     ├── progress.md            # per block log, append only
-    ├── notes/                 # one file per lesson
+    ├── notes/                 # one file per lesson - private, never submitted
     ├── audio/                 # read aloud scripts and renders
+    ├── submissions/           # reflection markdown plus the built .docx
     └── labs/                  # lab notebooks and saved cells
 ```
 
@@ -203,8 +204,20 @@ The manifest is probably a bare array instead of `{base, ctx, units}`. The engin
 `addInitScript` content is frozen when it is registered. Open a fresh tab and register again.
 
 **Marking did nothing.**
-The control is an `<a role="button">`, not a `<button>`, and it is two steps - click it, then confirm
-inside the modal. Auto-advancing to the next unit is the only real success signal. See section 10.1.
+The control is an `<a role="button">`, not a `<button>`, so counting `<button>` returns 0 either way and
+proves nothing. Click the `<a>`, then look for the confirmation modal and confirm it **if it appears** -
+where the "do not show this message again" preference is already set, one click saves and auto-advances
+with no dialog at all. Auto-advancing to the next unit is the only real success signal. See section 10.1.
+
+**I uploaded something and it did not appear.**
+The submission form is behind a toggle. The activity's Submissions & Messages tab opens on a message
+composer with no file input; click **Make a submission** first. There are zero `input[type=file]`
+elements before that click and two after it. The upload input is hidden, so clicking "browse files"
+times out - set the file directly instead. See section 10.7.
+
+**Never attach your notes to a submission.**
+They are your working out. The docx builder excludes them deliberately and says so in a comment. If a
+reflection looks thin without them, the reflection needs writing better.
 
 **The progress API returns 401.**
 It authenticates with a header, not a cookie. Read it by listening for the response on page load instead

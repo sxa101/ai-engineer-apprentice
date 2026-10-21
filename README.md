@@ -45,18 +45,28 @@ The prompt covers:
 - **A learner profile** you fill in once, so answers reflect a real workplace rather than a textbook.
 - **A writing register** for anything submitted - plain, short, slightly imperfect, with a banned word
   list. Because submissions get reviewed by a human, not polished by a machine.
-- **The learning loop** in full, including why the order matters.
+- **How to write a reflection** - three bullets maximum, two is better, built as a parallel rather than
+  a description. Includes the real diagnosis of what makes writing look machine generated: parallel
+  structure and triads, not length.
+- **Notes are private.** A hard rule with no exceptions - the learner's notes are their own working out
+  and never go to a third party, in any form, for any deadline.
+- **The learning loop** in full, including why the order matters, and why units must be marked in course
+  order as the audio finishes rather than batched to the end of a module.
 - **Read aloud with browser highlight** - on by default. The page words are spoken one segment per page
   block, so the highlight is exact. Built for people who cannot read comfortably.
 - **The course structure** - activities in a Discover / Practise / Apply shape, and how each unit type
   is delivered.
-- **Hard won technical notes** - how to mark a unit complete (it is an `<a>`, not a `<button>`, and it
-  is two steps), how to verify a lesson through the API rather than the page, how to extract content
-  reliably, and the Playwright and PowerShell traps that cost real time.
+- **Hard won technical notes** - how to mark a unit complete (it is an `<a>`, not a `<button>`, and the
+  confirmation modal is usually absent rather than always present), how to verify a lesson through the
+  API rather than the page, how to extract content reliably, and the Playwright and PowerShell traps
+  that cost real time.
+- **The Bud submission procedure** - the form sits behind a "Make a submission" toggle, the upload input
+  is hidden and has to be set directly, the own-work declaration is the learner's to tick and not the
+  agent's, and the status is only confirmed by reloading.
 - **Lab protocol** - labs are learner led, time limited and irreversible once submitted. Never run ahead,
   never submit without an explicit go-ahead.
-- **Full source** for every script it refers to, so a fresh setup does not have to reverse engineer
-  anything.
+- **Full source** for every script it refers to, including the reflection to `.docx` builder, so a fresh
+  setup does not have to reverse engineer anything.
 
 ---
 
@@ -109,9 +119,14 @@ learning itself. If the agent is doing the thinking, the block has failed.
 **Written work is reviewed by a human before it goes anywhere.** That applies to lab submissions too.
 They are irreversible and they carry the learner's name.
 
+**Private working stays private.** Notes are where a learner gets things wrong privately. They are not
+evidence and they are not an appendix. Nothing that belongs to the learner's own study gets attached to
+a submission.
+
 **The prompt is meant to be edited.** It has an enhancement log at the bottom. Every time a block
-teaches something that would have cost time to rediscover, add it there and date it. A stale copy of the
-prompt is worse than no copy.
+teaches something that would have cost time to rediscover, fold it in and date it - and if it corrects
+something the prompt already says, fix it where it is wrong rather than appending a contradiction. A
+stale copy of the prompt is worse than no copy.
 
 ---
 
