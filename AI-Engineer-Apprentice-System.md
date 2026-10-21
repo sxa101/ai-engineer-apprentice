@@ -526,6 +526,38 @@ are confirming.
 `button:has-text("Submit")` resolves to it and hangs. Scope the click to the form, or use
 `getByRole('button', { name: 'Submit', exact: true })` on the submissions page only.
 
+**There is a second confirmation after the Submit button.** Clicking Submit does **not** send anything.
+It opens a dialog:
+
+> **Submit for marking?** You can only make one submission at a time. Have you included all files /
+> comments that your trainer will need to mark it? — **Yes, Submit** / **Cancel**
+
+The `PUT .../submission` request only fires when **Yes, Submit** is clicked. Until then the page still
+reads In Progress and a network log shows no submission call. If you reload at this point the dialog is
+discarded and the staged file, comment and hours are gone.
+
+The dialog lives in a `.modal_content_container.open` at z-index 1050. **A stale hidden
+`Delete <file>.docx file?` dialog also sits in the DOM** at z-index 1049 with `display: none`. Querying
+`document.querySelector('.modal_content_container')` gets the wrong one and returns empty text with no
+useful buttons. Always filter for the visible one:
+
+```js
+[...document.querySelectorAll('.modal_content_container')]
+  .filter(m => getComputedStyle(m).display !== 'none')
+```
+
+then click `button:has-text("Yes, Submit")` inside it. Confirm the PUT returns 200 before believing
+anything.
+
+**Deleting a submission wipes more than the file.** The **Delete Submission** button on a submitted
+entry asks for confirmation and then removes the comment, the files, *and* the logged OTJ hours - the
+activity reverts to In Progress with `Pending: 0`. Any resubmission has to re-enter the hours. Delete
+only when the learner asks for it, and say what will be lost first.
+
+**File size in the UI identifies which build was uploaded.** Bud shows it to two decimal places, so a
+36,961 byte file reads `36.09KB` and a 36,967 byte one reads `36.10KB`. After rebuilding a docx, that
+number is the cheapest proof the corrected version is the one on the server.
+
 **After submitting, verify by reloading.** The activity status pill goes **In Progress -> Submitted**,
 and OTJ hours read `Planned: N Actual: 0 Pending: M`. Do not trust the immediate post-click DOM; reload
 and read the status again.
@@ -1296,6 +1328,15 @@ Newest at the top. One line per thing learned. This is how the file stays worth 
 
 **Seed entries - carried over from the run that produced this template.**
 
+- **Submit has two steps, not one.** Clicking the Submit button opens a *Submit for marking?* dialog;
+  nothing is sent until **Yes, Submit**. The dialog is a `.modal_content_container.open` at z-index 1050,
+  and a stale hidden *Delete file?* dialog sits beside it at 1049, so a naive query grabs the wrong one.
+  Reloading while it is open silently throws away the staged file, comment and hours.
+- **Deleting a submission also zeroes the OTJ hours.** It removes the comment and files and sets the
+  activity back to In Progress with `Pending: 0`, so a resubmission has to re-enter them. Say what will
+  be lost before deleting.
+- **UI file size proves which build uploaded.** Bud rounds to two decimals, so `36.09KB` versus
+  `36.10KB` distinguishes a corrected docx from the previous one without downloading it.
 - **Verify layout, not just word count.** A docx read-back that only counts words will pass a broken
   page. Hard-wrapped markdown bullets were being split into a bullet plus a plain paragraph, because
   the list branch consumed one line and advanced one line. Print each paragraph's style and look at the
