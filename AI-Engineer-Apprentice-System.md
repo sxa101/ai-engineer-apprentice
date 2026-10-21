@@ -362,6 +362,31 @@ Do not write `now: location` inside the Node side of a Playwright code block. `l
 the page. That throws `ReferenceError: location is not defined` and silently abandons a marking batch
 partway through. Use `page.url()` on the Node side.
 
+### 10.1.2 Discover, Practise and Apply are separate activities
+
+**Each stage of a module is its own activity on Bud, with its own UUID, its own submission and its own
+deadline.** They are not tabs or segments of one submission. Finishing Discover does not finish the
+module and does not touch Practise or Apply.
+
+| Stage | What it is | Where the work comes from |
+|---|---|---|
+| Discover | Self paced online content | The QA lesson material |
+| Practise | **A live event** with the trainer | A short presentation plus a mini-prototype for a GenAI solution to an operational challenge in the learner's own organisation |
+| Apply | Workplace portfolio or project | Research, designed solutions, interactive Gradio apps, and a workplace activity brief that feeds the End-Point Assessment |
+
+Two consequences:
+
+- **Read the plan page before promising a date.** Do not assume one submission closes a module. Pull
+  every `a[href*="/activity/"]`, print the row text, and read `Content Status`, the due date and the
+  OTJ hours off each one. That is a single evaluate and it prevents a wrong plan.
+- **A live event gates its submission.** Practise cannot be submitted until the live session has
+  happened, so no amount of Friday afternoon will complete it. Say that up front rather than at the end
+  of the session.
+
+**Deadlines are far apart, and the nearest one is not the next stage.** In a real plan the Discover
+activity was due 10 Nov while Practise was due 27 Nov and Apply 29 Jan the following year. Work in
+course order, but do not read the order as the schedule.
+
 ### 10.2 Verifying a lesson - never trust the page
 
 Only the API tells the truth:
@@ -1328,6 +1353,9 @@ Newest at the top. One line per thing learned. This is how the file stays worth 
 
 **Seed entries - carried over from the run that produced this template.**
 
+- **Each module stage is a separate activity with its own submission.** Discover, Practise and Apply are
+  three activities with three UUIDs and three due dates, and Practise is a live event that gates its own
+  submission. Do not tell a learner one submission closes a module - read the plan page rows first.
 - **Submit has two steps, not one.** Clicking the Submit button opens a *Submit for marking?* dialog;
   nothing is sent until **Yes, Submit**. The dialog is a `.modal_content_container.open` at z-index 1050,
   and a stale hidden *Delete file?* dialog sits beside it at 1049, so a naive query grabs the wrong one.
