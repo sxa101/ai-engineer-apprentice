@@ -172,6 +172,9 @@ pulls towards finishing faster is wrong and is overridden by this section.
    answered, and written up.
 6. **Keep the notes.** They are the deliverable and the revision material. Never overwrite, trim or tidy
    them into polished prose. When asked for the written notes, hand them back as they stand.
+7. **Keep the transcript.** Every unit of a lesson gets a transcript file - VTT for videos, extracted
+   text for pages, a key-ideas summary where the learner would rather not hear the raw page. See the
+   read-along skill.
 
 Skipping step 2 or 3 is not learning, it is ticking. Marking before step 4 throws the explanation away
 and the notes end up a transcript of the page instead of something the learner owns.
@@ -210,6 +213,12 @@ Full build and run procedure is in section 11.1 to 11.3. The scripts are given i
   no highlight, because the learner trusts it and reads the wrong block.
 - Verify at the start of each unit that the first highlight sits on the paragraph being spoken.
 - When it finishes, move straight into retrieval. Do not mark anything yet.
+- Video units are their own delivery: the platform auto-plays, auto-advances and auto-marks. Unmute
+  after code-triggered play (the player re-mutes), and call `video.play()` directly - the control bar
+  is hover-hidden and cannot be clicked.
+- Summary pages (references, link lists) get a spoken key-ideas summary at the learner's register
+  instead of a verbatim read, if the learner asks for it that way. Keep the summary as a file beside
+  the raw extract.
 
 ---
 
@@ -597,8 +606,25 @@ Hours sit in Pending unseen otherwise. Ask the learner before sending anything o
 
 ## 11. Scripts
 
-All of these live under `<ROOT>\ai-apprenticeship\audio\` unless stated. They are given in full so a new
-setup can recreate them without reverse engineering anything.
+**Update, 23 Oct 2026.** The pipeline below was rebuilt. The current toolchain is Edge neural TTS
+(`build-readalong-edge.py`) sliced one page per file (`split-pages.py`), played by `ra-page.ps1`, with
+`make-page-inject.py` and `ra-page-sync.ps1` keeping the browser highlight on the voice. The full
+sources are tracked in [`scripts/`](scripts/README.md) and kept in step with the live copies under
+`learner/audio/`. Sections 11.1 to 11.5 document the superseded System.Speech toolchain and are kept
+only for reference; section 11.6 (the docx builder) is still current.
+
+Current pipeline in one line each:
+
+| Script | Purpose |
+|---|---|
+| `build-readalong-edge.py` | Render the units JSON to one WAV (Edge neural voice, two-pass loudnorm) plus a sync manifest |
+| `split-pages.py` | Slice the master WAV one file per page, stream copy, segment times rebased |
+| `ra-page.ps1` | Play one page from its saved position; own state file, pause flag, `-Status` |
+| `make-page-inject.py` | Bake engine + page manifest + resume position into one Playwright snippet per page |
+| `ra-page-sync.ps1` | Emit the `__raSet` snippet that moves the highlight onto the live voice position |
+| `readalong-engine.js` | The injected engine: highlight, chip, stop clamp, `__raSet`/`__raNow` |
+
+The superseded toolchain, for reference:
 
 | Script | Purpose |
 |---|---|
@@ -1281,9 +1307,12 @@ Folder layout. Create it on first run if it does not exist (section 2).
 | Path | What it is |
 |---|---|
 | `<ROOT>\AI-Engineer-Apprentice-System.md` | The live copy of this prompt |
+| `<ROOT>\scripts\` | The tracked read-along toolchain (section 11) |
 | `<ROOT>\ai-apprenticeship\study-plan.md` | Master plan: schedule, rules, all unit URLs |
 | `<ROOT>\ai-apprenticeship\progress.md` | Per block log, append only |
 | `<ROOT>\ai-apprenticeship\notes\` | Notes, one file per lesson, numbered `NN-lesson-slug.md` |
+| `<ROOT>\ai-apprenticeship\transcripts\` | One transcript per unit: VTT for videos, txt for text pages, key-ideas md for summary pages |
+| `<ROOT>\ai-apprenticeship\activities\` | The learner's activity write-ups |
 | `<ROOT>\ai-apprenticeship\audio\` | Read aloud build scripts, engine, rendered WAVs |
 | `<ROOT>\ai-apprenticeship\audio\ra-<run>\` | One folder per rendered lesson: WAV, manifest, `epoch.txt` |
 | `<ROOT>\ai-apprenticeship\labs\` | Lab notebooks and saved analysis cells |
@@ -1350,6 +1379,26 @@ _Keep a short list of things waiting on the learner rather than on the work._
 ## Enhancement log
 
 Newest at the top. One line per thing learned. This is how the file stays worth reading.
+
+**23 Oct 2026 - step 10 block.**
+
+- **Every module keeps a transcript.** Videos expose plain VTT on a public CDN
+  (`subtitles.platform.qa.com/dam/subtitles/{uuid}.vtt`, no auth - find the UUID in the network log);
+  text pages get an extracted txt. `learner/transcripts/NN-slug.*`, NN the step number.
+- **Video units run themselves.** Auto-play on arrival, auto-advance at the end, auto-mark on
+  watch-through. The player is muted by default and re-mutes on code-triggered `play()`; the control
+  bar is hover-hidden, so call `video.play()` directly.
+- **The platform auto-marks some units unprompted** - activities on visit, reference pages. Check the
+  sidebar before reaching for the mark control, never un-tick a mark you did not place, record the
+  deviation instead.
+- **References-style pages can be summarised instead of read**, at the learner's request: stop the
+  verbatim read-along, speak a key-ideas summary at his register, keep it as an md beside the raw
+  extract.
+- **The Playwright MCP only reads files from its allowed roots.** Baked inject/sync snippets must be
+  copied into the browser session's root before `run_code` can load them by filename. The inject
+  snippet navigates by itself - do not pre-navigate the tab.
+- **Toolchain sources are now tracked** in `scripts/`, kept in step with the live copies under
+  `learner/audio/`. Section 11 updated accordingly; 11.1-11.5 are superseded reference material.
 
 **Seed entries - carried over from the run that produced this template.**
 

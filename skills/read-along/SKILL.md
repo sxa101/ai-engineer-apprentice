@@ -29,6 +29,7 @@ The loop, one page at a time:
 ra-page.ps1 -Status                 # where each page is up to - run this first, every block
 ra-page.ps1 -Unit 6                 # play page 6 from its saved position
 python make-page-inject.py 6        # bake the tab for page 6
+# copy inject-page-6.js / sync-page-6.js into the Playwright allowed root, run inject via run_code
 ra-page-sync.ps1 -Unit 6            # correct the tab to the real voice position
 # page ends -> the tab stays on that page -> mark it -> the platform advances itself
 ```
@@ -36,7 +37,36 @@ ra-page-sync.ps1 -Unit 6            # correct the tab to the real voice position
 **Always sync immediately after the inject.** The player writes its position about once a second, so
 a baked-in start is already stale by the time the tab finishes loading - measured at roughly four
 seconds. The sync helper adds the age of the state file back on. After a sync, page and voice agree to
-well under a second.
+well under a second. **The Playwright MCP only reads files from its allowed roots**, so the baked
+`inject-page-N.js` / `sync-page-N.js` must be copied from the run dir into the browser session's root
+before `run_code` can load them by filename. The inject snippet does its own navigation - run it, do
+not navigate the tab first.
+
+The script sources are tracked in [`scripts/`](../../scripts/README.md), kept in step with the live
+copies under `learner/audio/`.
+
+## Video units are not read-along units
+
+A video unit plays itself. The platform auto-plays on arrival, auto-advances at the end, and
+auto-marks the unit on watch-through - no manual marking, no audio pipeline. Two things to do:
+
+- **The player defaults to muted, and re-mutes when `play()` is called from code.** Set
+  `muted=false; volume=1` just after play starts, then verify. Sound is the whole point.
+- The control bar is hover-hidden, so clicking `.vjs-play-control` from Playwright times out. Call
+  `document.querySelector('video').play()` directly.
+
+## Keep a transcript of every module (since 23 Oct 2026)
+
+Every unit of a lesson gets a transcript file in `learner/transcripts/`, named `NN-slug` with `NN`
+the course step number:
+
+- **Video units:** the platform exposes subtitles as plain VTT on a public CDN - filter the network
+  log for `\.(m3u8|vtt|mp4|srt)` and the VTT URL is there (`subtitles.platform.qa.com/dam/subtitles/`
+  `{uuid}.vtt`). No auth; curl works. One UUID per video.
+- **Text units:** extract the page blocks (same recipe as the scrape) into a `.txt`.
+- **Summary pages** the learner would rather not hear read out (references, links): write a
+  key-ideas summary at his register instead, as `.md` beside the raw extract, and read *that* over
+  the page. Ask before the block which pages get the verbatim read and which get summarised.
 
 ## Rules
 
@@ -86,3 +116,6 @@ the dialog, confirm it if present, carry on if not.
 - `[Math]::Floor()` returns a double; cast to `[int]` before format strings.
 - The References-style pages can have as few as three content blocks - do not wait for more.
 - Injected engine content is frozen at registration. Change the engine, open a fresh tab.
+- The platform auto-marks some units without being asked - activities on visit, reference pages,
+  videos on watch-through. Check the sidebar before assuming a mark is needed, and never un-tick one
+  you did not place; record it and move on.

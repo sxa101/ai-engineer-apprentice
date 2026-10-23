@@ -60,6 +60,8 @@ learner/
   progress.md      the audit trail - one entry per block
   study-plan.md    the plan of record
   notes/           one file per lesson, the learner's voice
+  transcripts/     one transcript per unit: VTT for videos, txt for text pages
+  activities/      the learner's activity write-ups
   submissions/     drafts and uploads
   audio/           the read-along build for the current lesson
 ```
