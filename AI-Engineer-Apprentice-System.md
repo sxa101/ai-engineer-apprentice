@@ -384,7 +384,7 @@ Two consequences:
   of the session.
 
 **Deadlines are far apart, and the nearest one is not the next stage.** In a real plan the Discover
-activity was due 10 Nov while Practise was due 27 Nov and Apply 29 Jan the following year. Work in
+activity can fall due weeks before Practise, and Apply can sit months out. Work in
 course order, but do not read the order as the schedule.
 
 ### 10.2 Verifying a lesson - never trust the page

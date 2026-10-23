@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------------------
+# Personal learner state is NEVER pushed. This repo holds method and procedure
+# only. Everything a specific learner does, says, writes or hears lives in
+# learner/ on their machine and is never committed.
+# ---------------------------------------------------------------------------
+
+# The learner workspace - wholesale
+learner/
+
+# Belt and braces, in case personal files ever land outside learner/
+progress.md
+study-plan.md
+notes/
+submissions/
+audio/
+*.wav
+*.mp3
+*.docx
+*.json.state
+*.state.json
+*.pause
+pages/
+RESUME.md

@@ -1,12 +1,23 @@
 # AI Engineer Apprentice System
 
-An operating prompt that turns an AI coding agent into a study coach for the **QA / NVIDIA AI Engineer
+An operating system that turns an AI coding agent into a study coach for the **QA / NVIDIA AI Engineer
 Apprenticeship (Level 6)**, and lets someone work through the course at a real pace instead of clicking
 through it.
 
-It is one Markdown file. Paste it into a session and the agent knows how to run a study block: what to
-deliver, in what order, how to check the work actually landed, and how to mark a unit complete without
-fooling itself.
+It has three layers:
+
+- **[`STARTER-PROMPT.md`](STARTER-PROMPT.md)** - who the learner is and the rules that never bend.
+  Paste this into a session and it is enough to start.
+- **[`skills/`](skills/SKILLS.md)** - how each job is done. One skill per verb: run a session, read
+  along, take notes, research, reflect, run labs, submit. Each is short, independent, and loaded only
+  when needed.
+- **`learner/`** - the learner's own state: notes, progress log, study plan, audio. Never committed;
+  `.gitignore` keeps it out of any remote.
+
+[`AI-Engineer-Apprentice-System.md`](AI-Engineer-Apprentice-System.md) is the v1 monolith that came
+before this layout. It still holds the full technical reference (sections 6 and 11 carry the
+read-aloud build and script sources) and the skills point back to it rather than repeating it.
+[`SETUP.md`](SETUP.md) covers first setup.
 
 ---
 
@@ -35,10 +46,14 @@ first sweep and came back half understood on a second pass. Retrieval is what ca
 
 ## What is in the box
 
-| File | What it is |
+| Path | What it is |
 |---|---|
-| [`AI-Engineer-Apprentice-System.md`](AI-Engineer-Apprentice-System.md) | The prompt itself. Self contained - paste it in and go |
+| [`STARTER-PROMPT.md`](STARTER-PROMPT.md) | The constitution. Learner profile, the five gates, the learning loop, workspace layout |
+| [`skills/SKILLS.md`](skills/SKILLS.md) | Skills index - what each skill is for and how they compose |
+| [`skills/*/SKILL.md`](skills/SKILLS.md) | Seven skills: study-session, read-along, take-notes, research-summarise, make-reflections, run-labs, make-submissions |
+| [`AI-Engineer-Apprentice-System.md`](AI-Engineer-Apprentice-System.md) | The v1 monolith, kept as the technical reference for scripts and selectors |
 | [`SETUP.md`](SETUP.md) | How to set it up and use it, step by step |
+| `.gitignore` | Keeps `learner/` (all personal state) out of git |
 
 The prompt covers:
 
@@ -83,11 +98,12 @@ Nothing in the prompt contains a learner's data. It is a template - you fill in 
 
 ## Quick start
 
-1. Copy `AI-Engineer-Apprentice-System.md` somewhere you will keep it, for example `~/bud/`.
-2. Open a session with your agent and paste the whole file in as the first message.
-3. Work through section 2 of the prompt with the agent. It will ask you for your folder, your profile,
+1. Clone or copy this repo somewhere you will keep it, for example `~/bud/`.
+2. Open a session with your agent and paste `STARTER-PROMPT.md` in as the first message.
+3. Work through the first run with the agent. It will ask for your folder, your profile,
    whether you want read aloud, and your schedule. Answer honestly - the answers change the delivery.
-4. Start the first block.
+4. Start the first block. The agent loads the skill for whatever it is doing next - the index is
+   `skills/SKILLS.md`.
 
 Full instructions, including the audio setup and the portal chain, are in [`SETUP.md`](SETUP.md).
 
@@ -123,10 +139,10 @@ They are irreversible and they carry the learner's name.
 evidence and they are not an appendix. Nothing that belongs to the learner's own study gets attached to
 a submission.
 
-**The prompt is meant to be edited.** It has an enhancement log at the bottom. Every time a block
-teaches something that would have cost time to rediscover, fold it in and date it - and if it corrects
-something the prompt already says, fix it where it is wrong rather than appending a contradiction. A
-stale copy of the prompt is worse than no copy.
+**The system is meant to be edited.** Every time a block teaches something that would have cost time
+to rediscover, fold it into the relevant skill and date it - and if it corrects something the skill
+already says, fix it where it is wrong rather than appending a contradiction. A stale skill is worse
+than no skill.
 
 ---
 
