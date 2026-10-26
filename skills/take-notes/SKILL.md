@@ -29,6 +29,13 @@ This is a privacy rule, not a formatting preference, and it does not get relaxed
 - Commentary the learner heard but the page does not show (analogies, asides, worked examples given
   aloud) goes in too - it is part of the lesson and it exists nowhere else.
 
+## Who drafts them
+
+The assistant writes the notes, in full, in the learner's voice, at block close - it does not ask
+how the learner wants to proceed. Drafting notes is one of the assistant's original responsibilities
+in this course. The learner's job is to review and correct, not to co-write. Presenting the finished
+file as "notes are written, ready for your review" is the expected hand-off.
+
 ## When writing them
 
 - During the block, per unit, before the tick. Marking before the notes exist throws the explanation
