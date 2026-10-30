@@ -69,8 +69,8 @@ learner/
 ## Using the skills
 
 Read [`skills/SKILLS.md`](skills/SKILLS.md) once at session start. Load the skill for the verb in
-front of you - read-along, take-notes, research-summarise, make-reflections, run-labs,
-make-submissions - plus `study-session` for the shape of a block. Do not load them all; they are
+front of you - read-along, take-notes, research-summarise, make-reflections, run-labs, make-submissions,
+knowledge-check - plus `study-session` for the shape of a block. Do not load them all; they are
 independent on purpose.
 
 ## First run

@@ -43,3 +43,18 @@ described from outside.
 - Grounded in what the learner actually said in retrieval and what is in their notes - including the
   wrong answers and the corrections. Those are the authentic details.
 - If the draft needs the notes to make sense, the draft needs rewriting. Notes never travel with it.
+
+## The build pipeline (learned 30 Oct 2026)
+
+- One markdown source per reflection in `learner/submissions/`, named after the full activity in
+  kebab case (`activity-1-3-discover-building-and-automating-with-generative-ai-reflection.md`).
+  All wording changes go in the md, never the docx.
+- Build with `build-submission-docx.py` in the same folder, then verify the page count with Word COM
+  (`ComputeStatistics(2)`). One A4 page is roughly 480 words at the current styling. A reflection
+  that runs past one page gets cut, not shrunk.
+- The docx is named `Activity-<n>.<stage>-<Full Activity Name>-Reflection.docx`. There will be many
+  Discover, Practise and Apply reflections; the full activity name is what keeps them apart.
+- If the docx is open in Word, the build fails with a file lock. Ask for it to be closed rather than
+  fighting the lock.
+- The no-ai-slop skill (`~/.agents/skills/no-ai-slop/SKILL.md`) governs the final pass. If the
+  runtime skill registry does not see it, read it from disk and apply it by hand.

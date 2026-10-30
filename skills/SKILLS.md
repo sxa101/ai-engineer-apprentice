@@ -12,11 +12,12 @@ can improve without touching the others. `study-session` is the frame the others
 | [`make-reflections`](make-reflections/SKILL.md) | Writing reflections and short personal answers | Three bullets maximum, two is better |
 | [`run-labs`](run-labs/SKILL.md) | Interactive lab sessions | Learner led; hold the submission for a go-ahead |
 | [`make-submissions`](make-submissions/SKILL.md) | Uploading work to the learning portal | Nothing is submitted without the learner's explicit, post-read go-ahead |
+| [`knowledge-check`](knowledge-check/SKILL.md) | Offering help around Knowledge Check exams | The exam is sat by the learner alone; the coach offers, prepares and harvests |
 
 ## How they compose
 
 ```
-Discover:  study-session -> read-along -> take-notes        (per unit, in that order)
+Discover:  study-session -> read-along -> take-notes -> knowledge-check   (check ends the stage)
 Practise:  study-session -> run-labs, research-summarise
 Apply:     study-session -> research-summarise -> make-reflections -> make-submissions
 ```
